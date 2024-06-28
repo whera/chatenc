@@ -69,10 +69,12 @@
                     // Criptografa a mensagem
                     const encryptedMessage = encryptMessageWithPublicKey(message, publicKeyPem);
                     if (encryptedMessage) {
+                        var myconfig = localStorage.getItem('myconfig');
+                        var myconfigObj = JSON.parse(myconfig);
 
                         // Cria a URL para a API do WhatsApp
                         const host = window.location.host;
-                        const whatsappText = `http://${host}/decrypt.html?id=${id}&ciphertext=${encodeURIComponent(encryptedMessage)}`;
+                        const whatsappText = `http://${host}/decrypt.html?id=${myconfigObj.id}&ciphertext=${encodeURIComponent(encryptedMessage)}`;
 
                         // Confirmação do envio
                         const confirmation = confirm('Deseja enviar a mensagem criptografada?');
