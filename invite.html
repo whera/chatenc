@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar Convite via WhatsApp</title>
+</head>
+<body>
+    <h2>Enviar Convite via WhatsApp</h2>
+    <form id="conviteForm">
+        <label for="id">ID (somente números):</label>
+        <input type="number" id="id" name="id" required><br><br>
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required><br><br>
+        <button type="submit">Enviar Convite</button>
+    </form>
+
+    <script>
+        document.getElementById('conviteForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Obter dados do formulário
+            var id = document.getElementById('id').value;
+            var nome = document.getElementById('nome').value;
+
+            // Verificar se o ID é numérico
+            if (!(/^\d+$/.test(id))) {
+                alert('Por favor, digite apenas números no campo ID.');
+                return;
+            }
+
+            // Obter dados do localStorage e fazer o parse
+            var myconfig = localStorage.getItem('myconfig');
+            if (!myconfig) {
+                alert('myconfig não encontrado no localStorage');
+                return;
+            }
+
+            try {
+                var myconfigObj = JSON.parse(myconfig);
+                var publicKey = myconfigObj.publicKey;
+
+                // Codificar a chave pública em Base64
+                var publicKeyBase64 = btoa(publicKey);
+
+                // Salvar contato no localStorage com chave baseada no ID
+                var contatoKey = id.toString(); // Converter para string, se necessário
+                var contatoValue = JSON.stringify({ name: nome, key: null });
+                localStorage.setItem(contatoKey, contatoValue);
+
+                // Construir URL do WhatsApp
+                var url = 'https://web.whatsapp.com/send';
+                var queryString = '?phone=' + encodeURIComponent(id) +
+                                    '&text=' + encodeURIComponent('http://' + window.location.host + '/ack.html?id=' + id + '&key=' + encodeURIComponent(publicKeyBase64));
+
+                // Abrir o WhatsApp em uma nova aba
+                var whatsappUrl = url + queryString;
+                window.open(whatsappUrl, '_blank');
+                
+                window.location.href = '/';
+            } catch (error) {
+                console.error('Erro ao fazer parse de myconfig:', error);
+                alert('Erro ao processar myconfig. Verifique o console para mais detalhes.');
+            }
+        });
+    </script>
+</body>
+</html>

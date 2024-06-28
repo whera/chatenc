@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulário de Configuração</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/forge/0.10.0/forge.min.js"></script>
+  <style>
+    #configForm {
+      display: none;
+    }
+    a {
+        padding: 20px;
+        margin: 20px;;
+    }
+  </style>
+</head>
+<body>
+  <div id="menu">
+    <a href="/invite.html">Adicionar contato</a>
+  </div>
+  </div>  
+  <form id="configForm">
+    <h2>Configuração Inicial</h2>
+    <label for="id">ID:</label><br>
+    <input type="number" id="id" name="id"><br><br>
+
+    <label for="passphrase">Passphrase:</label><br>
+    <input type="password" id="passphrase" name="passphrase"><br><br>
+
+    <button type="submit">Salvar Configurações</button>
+  </form>
+
+  <br><br>
+  <div id="contacts" style="display: none;"></div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (!localStorage.getItem('myconfig')) {
+        document.getElementById('configForm').style.display = 'block';
+        document.getElementById('menu').style.display = 'none';
+      } else {
+        document.getElementById('contacts').style.display = 'block';
+        createLinksForLocalStorageKeys();
+      }
+
+      document.getElementById('configForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var idValue = document.getElementById('id').value;
+        var passphraseValue = document.getElementById('passphrase').value;
+
+        try {
+            var rsa = forge.pki.rsa;
+            var chaveRSA = rsa.generateKeyPair({ bits: 2048, workers: -1 });
+    
+            var privateKeyPem = forge.pki.privateKeyToPem(chaveRSA.privateKey, 64);
+            var encryptedPrivateKeyPem = forge.pki.encryptRsaPrivateKey(chaveRSA.privateKey, passphraseValue);
+            var publicKeyPem = forge.pki.publicKeyToPem(chaveRSA.publicKey);
+
+            var configObject = {
+                id: idValue,
+                publicKey: publicKeyPem,
+                privateKey: encryptedPrivateKeyPem,
+            };
+
+          localStorage.setItem('myconfig', JSON.stringify(configObject));
+          alert('Configuração salva com sucesso!');
+          window.location.href = '/';
+
+        } catch (error) {
+          console.error('Erro ao gerar chave RSA:', error);
+          alert('Erro ao gerar chave RSA. Verifique o console para mais detalhes.');
+        }
+      });
+    });
+
+    function createLinksForLocalStorageKeys() {
+        var totalItems = localStorage.length;
+        var container = document.getElementById('contacts');
+
+        for (var i = 0; i < totalItems; i++) {
+            var key = localStorage.key(i);
+
+            if (key === 'myconfig') {
+                continue;
+            }
+
+            var contactObj = JSON.parse(localStorage.getItem(key));
+            var link = document.createElement('a');
+            link.href = 'http://' + window.location.host + '/send.html?id=' + key;
+            link.textContent = contactObj.name;
+            container.appendChild(link);
+            
+            container.appendChild(document.createElement('br'));
+            container.appendChild(document.createElement('br'));
+        }
+    }
+    </script>
+    
+</body>
+</html>

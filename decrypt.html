@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decrypt Message</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/forge/0.10.0/forge.min.js"></script>
+</head>
+<body>
+    <h2>Decrypt Message</h2>
+
+    <form id="decryptForm">
+        <label for="id">ID:</label><br>
+        <input type="text" id="id" name="id" readonly><br><br>
+
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" readonly><br><br>
+
+        <label for="ciphertext">Encrypted Message:</label><br>
+        <textarea id="ciphertext" name="ciphertext" rows="10" cols="50"></textarea><br><br>
+
+        <input type="button" value="Decrypt" id="decryptButton">
+    </form>
+
+    <script>
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        function base64Decode(input) {
+            return forge.util.decode64(input);
+        }
+
+        function decryptMessageWithPrivateKey(ciphertext, privateKeyPem, passphrase) {
+            try {
+                const privateKey = forge.pki.decryptRsaPrivateKey(privateKeyPem, passphrase);
+
+                const decrypted = privateKey.decrypt(forge.util.decode64(ciphertext), 'RSA-OAEP', {
+                    md: forge.md.sha256.create()
+                });
+
+                return decrypted;
+            } catch (e) {
+                console.error('Erro ao descriptografar a mensagem:', e);
+                return null;
+            }
+        }
+
+        const id = getUrlParameter('id');
+        const ciphertextBase64 = getUrlParameter('ciphertext');
+
+        if (id) {
+            const contact = JSON.parse(localStorage.getItem(id));
+
+            if (contact) {
+                document.getElementById('id').value = id;
+                document.getElementById('name').value = contact.name;
+                document.getElementById('ciphertext').value = ciphertextBase64;
+
+                document.getElementById('decryptButton').addEventListener('click', function() {
+                const passphrase = prompt('Por favor, informe o passphrase para descriptografar:');
+                    
+                if (passphrase !== null && passphrase.trim() !== '') {
+                    const myconfig = JSON.parse(localStorage.getItem('myconfig'));
+                    const ciphertextBase64 = document.getElementById('ciphertext').value;
+                    const decryptedMessage = decryptMessageWithPrivateKey(ciphertextBase64, myconfig.privateKey, passphrase);
+                    
+                    if (decryptedMessage !== null) {
+                        const confirmPop = confirm('Mensagem descriptografada:\n\n' + decryptedMessage + '\n\nDeseja Responder?');
+                            
+                        if (confirmPop) {
+                            const id = getUrlParameter('id');
+                            window.location.href = '/send.html?id=' + id;
+                        }
+                            
+                    } else {
+                        alert('Erro ao descriptografar a mensagem. Verifique o passphrase.');
+                    }
+                    } else {
+                        alert('Passphrase não fornecido ou vazio.');
+                    }
+                });
+            } else {
+                alert('Contato não encontrado no localStorage para o ID fornecido.');
+            }
+        } else {
+            alert('ID não fornecido na URL.');
+        }
+    </script>
+</body>
+</html>

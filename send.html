@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Message</title>
+    <!-- Inclui a biblioteca forge -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/forge/0.10.0/forge.min.js"></script>
+</head>
+<body>
+    <h2>Send Encrypted Message</h2>
+
+    <form id="messageForm">
+        <label for="id">ID:</label><br>
+        <input type="text" id="id" name="id" readonly><br><br>
+
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" readonly><br><br>
+
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" rows="10" cols="50"></textarea><br><br>
+        <input type="submit" value="Send">
+    </form>
+
+    <script>
+        // Função para obter o valor de um parâmetro de URL
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Função para criptografar a mensagem usando a chave pública com RSA-OAEP
+        function encryptMessageWithPublicKey(message, publicKeyPem) {
+            try {
+                const publicKey = forge.pki.publicKeyFromPem(publicKeyPem);
+                const encrypted = publicKey.encrypt(message, 'RSA-OAEP', {
+                    md: forge.md.sha256.create()
+                });
+                return forge.util.encode64(encrypted);
+            } catch (e) {
+                console.error('Erro ao criptografar a mensagem:', e);
+                return null;
+            }
+        }
+
+        // Obtém o ID da URL
+        const id = getUrlParameter('id');
+
+        // Verifica se o ID existe
+        if (id) {
+            // Obtém o contato do localStorage
+            const contact = JSON.parse(localStorage.getItem(id));
+
+            // Verifica se o contato existe e tem uma chave pública
+            if (contact && contact.key) {
+                // Preenche os campos readonly
+                document.getElementById('id').value = id;
+                document.getElementById('name').value = contact.name;
+
+                const publicKeyPem = contact.key;
+
+                // Evento de envio do formulário
+                document.getElementById('messageForm').addEventListener('submit', function(event) {
+                    event.preventDefault();
+
+                    // Obtém a mensagem do textarea
+                    const message = document.getElementById('message').value;
+
+                    // Criptografa a mensagem
+                    const encryptedMessage = encryptMessageWithPublicKey(message, publicKeyPem);
+                    if (encryptedMessage) {
+
+                        // Cria a URL para a API do WhatsApp
+                        const host = window.location.host;
+                        const whatsappText = `http://${host}/decrypt.html?id=${id}&ciphertext=${encodeURIComponent(encryptedMessage)}`;
+
+                        // Confirmação do envio
+                        const confirmation = confirm('Deseja enviar a mensagem criptografada?');
+                        if (confirmation) {
+                            // Redireciona para o WhatsApp
+                            const whatsappUrl = `https://api.whatsapp.com/send?phone=${id}&text=${encodeURIComponent(whatsappText)}`;
+                            window.location.href = whatsappUrl;
+                        }
+                    } else {
+                        alert('Erro ao criptografar a mensagem.');
+                    }
+                });
+            } else {
+                alert('Chave pública não encontrada para o ID fornecido.');
+            }
+        } else {
+            alert('ID não fornecido na URL.');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acknowledgment</title>
+</head>
+<body>
+    <h2>Acknowledgment</h2>
+
+    <script>
+        function base64Decode(str) {
+            return atob(str);
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        const keyBase64 = urlParams.get('key');
+
+
+        var keyDecoded = '';
+        if (keyBase64) {
+            keyDecoded = base64Decode(keyBase64);
+        }
+
+        var name = prompt('Por favor, digite o seu nome:');
+        if (name !== null && name.trim() !== '') {
+            var localStorageItem = localStorage.getItem(id);
+            if (localStorageItem) {
+                var existingItem = JSON.parse(localStorageItem);
+                existingItem.name = name;
+                existingItem.key = keyDecoded;
+                localStorage.setItem(id, JSON.stringify(existingItem));
+            } else {
+                var newItem = { name: name, key: keyDecoded };
+                localStorage.setItem(id, JSON.stringify(newItem));
+            }
+            document.body.innerHTML = '';
+
+            try {
+                var myconfig = localStorage.getItem('myconfig');
+                if (!myconfig) {
+                    alert('myconfig não encontrado no localStorage');
+                }
+                
+                var myconfigObj = JSON.parse(myconfig);
+                var publicKey = myconfigObj.publicKey;
+                var publicKeyBase64 = btoa(publicKey);
+
+                var url = 'https://web.whatsapp.com/send';
+                var queryString = '?phone=' + encodeURIComponent(id) +
+                                    '&text=' + encodeURIComponent('http://' + window.location.host + '/ack.html?id=' + id + '&key=' + encodeURIComponent(publicKeyBase64));
+
+                var whatsappUrl = url + queryString;
+                var link = document.createElement('a');
+                link.href = whatsappUrl;
+                link.textContent = 'Enviar sua chave';
+                document.body.appendChild(link);
+            } catch (error) {
+                console.error('Erro ao fazer parse de myconfig:', error);
+                alert('Erro ao processar myconfig. Verifique o console para mais detalhes.');
+            }
+
+        } else {
+            alert('Nome não fornecido. A página será fechada.');
+            window.close();
+        }
+    </script>
+</body>
+</html>
