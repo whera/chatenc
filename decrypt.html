@@ -68,7 +68,7 @@
                     const decryptedMessage = decryptMessageWithPrivateKey(ciphertextBase64, myconfig.privateKey, passphrase);
                     
                     if (decryptedMessage !== null) {
-                        const confirmPop = confirm('Mensagem descriptografada:\n\n' + decryptedMessage + '\n\nDeseja Responder?');
+                        const confirmPop = confirm('Mensagem descriptografada:\n\n---------------\n' + decryptedMessage + '\n---------------\n\nDeseja Responder?');
                             
                         if (confirmPop) {
                             const id = getUrlParameter('id');
