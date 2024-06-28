@@ -47,8 +47,8 @@
                 var publicKey = myconfigObj.publicKey;
                 var publicKeyBase64 = btoa(publicKey);
 
-                var url = 'https://web.whatsapp.com/send';
-                var queryString = '?phone=' + encodeURIComponent(id) +
+                var url = 'https://wa.me';
+                var queryString = '/' + encodeURIComponent(id) +
                                     '&text=' + encodeURIComponent('http://' + window.location.host + '/ack.html?id=' + id + '&key=' + encodeURIComponent(publicKeyBase64));
 
                 var whatsappUrl = url + queryString;
