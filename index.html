@@ -85,14 +85,16 @@
                 continue;
             }
 
+            var boxElement = document.createElement('div');
+            boxElement.setAttribute('class', 'box-contact');
+
             var contactObj = JSON.parse(localStorage.getItem(key));
             var link = document.createElement('a');
             link.href = 'http://' + window.location.host + '/send.html?id=' + key;
             link.textContent = contactObj.name;
-            container.appendChild(link);
-            
-            container.appendChild(document.createElement('br'));
-            container.appendChild(document.createElement('br'));
+            boxElement.appendChild(link);
+
+            container.appendChild(boxElement);
         }
     }
     </script>
