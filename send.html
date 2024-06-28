@@ -8,9 +8,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/forge/0.10.0/forge.min.js"></script>
 </head>
 <body>
-    <h2>Send Encrypted Message</h2>
 
-    <form id="messageForm">
+    <form id="messageForm" style="display: none;">
+        <h2>Send Encrypted Message</h2>
         <label for="id">ID:</label><br>
         <input type="text" id="id" name="id" readonly><br><br>
 
@@ -58,6 +58,7 @@
                 document.getElementById('name').value = contact.name;
 
                 const publicKeyPem = contact.key;
+                document.getElementById('messageForm').style.display = 'block';
 
                 // Evento de envio do formulário
                 document.getElementById('messageForm').addEventListener('submit', function(event) {
