@@ -53,7 +53,7 @@
                 // Construir URL do WhatsApp
                 var url = 'https://wa.me';
                 var queryString = '/' + encodeURIComponent(id) +
-                                    '?text=' + encodeURIComponent('http://' + window.location.host + '/ack.html?id=' + id + '&key=' + encodeURIComponent(publicKeyBase64));
+                                    '?text=' + encodeURIComponent('http://' + window.location.host + '/ack.html?id=' + myconfigObj.id + '&key=' + encodeURIComponent(publicKeyBase64));
 
                 // Abrir o WhatsApp em uma nova aba
                 var whatsappUrl = url + queryString;
