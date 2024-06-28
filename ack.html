@@ -23,9 +23,19 @@
             keyDecoded = base64Decode(keyBase64);
         }
 
-        var name = prompt('Por favor, digite o seu nome:');
+        var localStorageItem = localStorage.getItem(id);
+        if (localStorageItem) {
+            var existingItem = JSON.parse(localStorageItem);
+            existingItem.key = keyDecoded;
+            localStorage.setItem(id, JSON.stringify(existingItem));
+            alert("Chave aceita com sucesso.");
+            window.location.href = '/';
+        }
+
+
+        var name = prompt('Por favor, digite o seu do contato:');
         if (name !== null && name.trim() !== '') {
-            var localStorageItem = localStorage.getItem(id);
+            
             if (localStorageItem) {
                 var existingItem = JSON.parse(localStorageItem);
                 existingItem.name = name;
