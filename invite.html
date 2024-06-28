@@ -51,8 +51,8 @@
                 localStorage.setItem(contatoKey, contatoValue);
 
                 // Construir URL do WhatsApp
-                var url = 'https://wa.me';
-                var queryString = '/' + encodeURIComponent(id) +
+                var url = 'whatsapp://';
+                var queryString = '' + encodeURIComponent(id) +
                                     '&text=' + encodeURIComponent('http://' + window.location.host + '/ack.html?id=' + id + '&key=' + encodeURIComponent(publicKeyBase64));
 
                 // Abrir o WhatsApp em uma nova aba
