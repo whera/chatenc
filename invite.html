@@ -46,7 +46,7 @@
                 var publicKeyBase64 = btoa(publicKey);
 
                 // Salvar contato no localStorage com chave baseada no ID
-                var contatoKey = id.toString(); // Converter para string, se necessário
+                var contatoKey = id; // Converter para string, se necessário
                 var contatoValue = JSON.stringify({ name: nome, key: null });
                 localStorage.setItem(contatoKey, contatoValue);
 

@@ -3,11 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acknowledgment</title>
 </head>
 <body>
-    <h2>Acknowledgment</h2>
-
     <script>
         function base64Decode(str) {
             return atob(str);
@@ -36,15 +33,8 @@
         var name = prompt('Por favor, digite o seu do contato:');
         if (name !== null && name.trim() !== '') {
             
-            if (localStorageItem) {
-                var existingItem = JSON.parse(localStorageItem);
-                existingItem.name = name;
-                existingItem.key = keyDecoded;
-                localStorage.setItem(id, JSON.stringify(existingItem));
-            } else {
-                var newItem = { name: name, key: keyDecoded };
-                localStorage.setItem(id, JSON.stringify(newItem));
-            }
+            var newItem = { name: name, key: keyDecoded };
+            localStorage.setItem(id, JSON.stringify(newItem));
             document.body.innerHTML = '';
 
             try {
@@ -59,7 +49,7 @@
 
                 var url = 'https://wa.me';
                 var queryString = '/' + encodeURIComponent(id) +
-                                    '?text=' + encodeURIComponent('http://' + window.location.host + '/ack.html?id=' + id + '&key=' + encodeURIComponent(publicKeyBase64));
+                                    '?text=' + encodeURIComponent('http://' + window.location.host + '/ack.html?id=' + myconfigObj.id + '&key=' + encodeURIComponent(publicKeyBase64));
 
                 var whatsappUrl = url + queryString;
                 var link = document.createElement('a');
