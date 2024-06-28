@@ -49,7 +49,7 @@
 
                 var url = 'https://wa.me';
                 var queryString = '/' + encodeURIComponent(id) +
-                                    '&text=' + encodeURIComponent('http://' + window.location.host + '/ack.html?id=' + id + '&key=' + encodeURIComponent(publicKeyBase64));
+                                    '?text=' + encodeURIComponent('http://' + window.location.host + '/ack.html?id=' + id + '&key=' + encodeURIComponent(publicKeyBase64));
 
                 var whatsappUrl = url + queryString;
                 var link = document.createElement('a');

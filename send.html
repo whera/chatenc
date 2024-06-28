@@ -78,7 +78,7 @@
                         const confirmation = confirm('Deseja enviar a mensagem criptografada?');
                         if (confirmation) {
                             // Redireciona para o WhatsApp
-                            const whatsappUrl = `https://wa.me/${id}&text=${encodeURIComponent(whatsappText)}`;
+                            const whatsappUrl = `https://wa.me/${id}?text=${encodeURIComponent(whatsappText)}`;
                             window.location.href = whatsappUrl;
                         }
                     } else {
