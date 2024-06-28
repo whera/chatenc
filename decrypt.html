@@ -7,9 +7,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/forge/0.10.0/forge.min.js"></script>
 </head>
 <body>
-    <h2>Decrypt Message</h2>
 
-    <form id="decryptForm">
+    <form id="decryptForm" style="display: none;">
+        <h2>Decrypt Message</h2>
         <label for="id">ID:</label><br>
         <input type="text" id="id" name="id" readonly><br><br>
 
@@ -57,6 +57,7 @@
                 document.getElementById('id').value = id;
                 document.getElementById('name').value = contact.name;
                 document.getElementById('ciphertext').value = ciphertextBase64;
+                document.getElementById('decryptForm').style.display = 'block';
 
                 document.getElementById('decryptButton').addEventListener('click', function() {
                 const passphrase = prompt('Por favor, informe o passphrase para descriptografar:');
