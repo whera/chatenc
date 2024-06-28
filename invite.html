@@ -15,6 +15,8 @@
         <button type="submit">Enviar Convite</button>
     </form>
 
+    <div class="send-link"></div>
+
     <script>
         document.getElementById('conviteForm').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -49,8 +51,8 @@
                 localStorage.setItem(contatoKey, contatoValue);
 
                 // Construir URL do WhatsApp
-                var url = 'https://web.whatsapp.com/send';
-                var queryString = '?phone=' + encodeURIComponent(id) +
+                var url = 'https://wa.me';
+                var queryString = '/' + encodeURIComponent(id) +
                                     '&text=' + encodeURIComponent('http://' + window.location.host + '/ack.html?id=' + id + '&key=' + encodeURIComponent(publicKeyBase64));
 
                 // Abrir o WhatsApp em uma nova aba
